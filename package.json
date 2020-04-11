@@ -1,0 +1,23 @@
+{
+  "name": "slack-commands",
+  "version": "1.0.0",
+  "description": "Bundle of AWS lambdas for Slack command listeners",
+  "main": "handlers.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pauloavelar/slack-commands.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pauloavelar/slack-commands/issues"
+  },
+  "homepage": "https://github.com/pauloavelar/slack-commands#readme",
+  "dependencies": {
+    "@slack/bolt": "^2.0.0"
+  }
+}

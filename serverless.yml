@@ -1,0 +1,20 @@
+service: slack-commands
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+functions:
+  # Private Mentions
+  privateMentionsOnChannel:
+    handler: handlers.onChannelCommand
+    events:
+      - http:
+          path: private-mentions/channel
+          method: post
+  privateMentionsOnHere:
+    handler: handlers.onHereCommand
+    events:
+      - http:
+          path: private-mentions/here
+          method: post
