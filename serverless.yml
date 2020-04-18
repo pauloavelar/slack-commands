@@ -4,6 +4,12 @@ provider:
   name: aws
   runtime: nodejs12.x
 
+package:
+  exclude:
+    - credentials.sh
+    - LICENSE
+    - README.md
+
 functions:
   # Private Mentions
   privateMentionsOnChannel:

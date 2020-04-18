@@ -1,2 +1,4 @@
 node_modules/
 .serverless/
+credentials.sh
+.DS_Store
