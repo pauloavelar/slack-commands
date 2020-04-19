@@ -3,6 +3,8 @@ service: slack-commands
 provider:
   name: aws
   runtime: nodejs12.x
+  environment:
+    SLACK_SIGNING_SECRET: ${env:SLACK_SIGNING_SECRET}
 
 package:
   exclude:
@@ -12,15 +14,41 @@ package:
 
 functions:
   # Private Mentions
+  privateMentionsOnInstall:
+    handler: privatementions.onInstall
+    events:
+      - http:
+          path: private-mentions
+          method: post
   privateMentionsOnChannel:
-    handler: handlers.onChannelCommand
+    handler: privatementions.onChannelCommand
     events:
       - http:
           path: private-mentions/channel
           method: post
   privateMentionsOnHere:
-    handler: handlers.onHereCommand
+    handler: privatementions.onHereCommand
     events:
       - http:
           path: private-mentions/here
           method: post
+
+resources:
+  Resources:
+    slackAuth:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: SlackAuth
+        AttributeDefinitions:
+          - AttributeName: appId
+            AttributeType: S
+          - AttributeName: workspaceId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: appId
+            KeyType: HASH
+          - AttributeName: workspaceId
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 2
+          WriteCapacityUnits: 10
