@@ -1,6 +1,6 @@
-function respond(body) {
+function respond(body, statusCode = 200) {
   return {
-    statusCode: 200,
+    statusCode,
     body: prepareResponseBody(body),
   };
 }

@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/pauloavelar/slack-commands#readme",
   "dependencies": {
-    "@slack/bolt": "^2.0.0"
+    "@slack/bolt": "^2.0.0",
+    "qs": "^6.9.3"
   }
 }
