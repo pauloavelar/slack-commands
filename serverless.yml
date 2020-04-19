@@ -22,12 +22,14 @@ functions:
           method: post
   privateMentionsOnChannel:
     handler: privatementions.onChannelCommand
+    role: readOnlyLambdaRole
     events:
       - http:
           path: private-mentions/channel
           method: post
   privateMentionsOnHere:
     handler: privatementions.onHereCommand
+    role: readOnlyLambdaRole
     events:
       - http:
           path: private-mentions/here
@@ -38,17 +40,55 @@ resources:
     slackAuth:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: SlackAuth
+        TableName: SlackCommands
         AttributeDefinitions:
-          - AttributeName: appId
-            AttributeType: S
-          - AttributeName: workspaceId
+          - AttributeName: teamId
             AttributeType: S
         KeySchema:
-          - AttributeName: appId
+          - AttributeName: teamId
             KeyType: HASH
-          - AttributeName: workspaceId
-            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 2
           WriteCapacityUnits: 10
+    readOnlyLambdaRole:
+      Type: AWS::IAM::Role
+      Properties:
+        Path: /my/default/path/
+        RoleName: SlackCommands-ReadOnlyLambdaRole
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: slackCommandsTableGetItem
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource:
+                    - 'Fn::Join':
+                      - ':'
+                      -
+                        - 'arn:aws:logs'
+                        - Ref: 'AWS::Region'
+                        - Ref: 'AWS::AccountId'
+                        - 'log-group:/aws/lambda/*:*:*'
+                - Effect: Allow
+                  Action:
+                    - "dynamodb:GetItem"
+                  Resource:
+                    - 'Fn::Join':
+                      - ':'
+                      -
+                        - 'arn:aws:dynamodb'
+                        - Ref: 'AWS::Region'
+                        - Ref: 'AWS::AccountId'
+                        - 'table/SlackCommands'
